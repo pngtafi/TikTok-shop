@@ -1,110 +1,76 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import {
-  fetchProductById,
-  fetchProductImages,
-} from '../services/productService'
 
-const ProductDetail = () => {
-  const { id } = useParams()
+import ProductImages from '../components/ProductImages'
+import ProductInfo from '../components/ProductInfo'
+import ProductVariants from '../components/ProductVariants'
+import ProductReviews from '../components/ProductReviews'
+import BottomBar from '../components/BottomBar'
+import { fetchProductById } from '../services/productService'
+
+function ProductDetail() {
+  const { id } = useParams() // Lấy product ID từ URL
   const [product, setProduct] = useState(null)
-  const [mainImage, setMainImage] = useState('')
-  const [subImages, setSubImages] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadProduct = async () => {
       try {
         const res = await fetchProductById(id)
-        const data = res.data
-        setProduct(data)
-        setMainImage(data.image_url || '')
-      } catch (err) {
-        console.error('Lỗi khi tải sản phẩm:', err)
-      }
-    }
-
-    const loadSubImages = async () => {
-      try {
-        const res = await fetchProductImages(id)
-        console.log('📷 Ảnh phụ:', res)
-        setSubImages(res.data || [])
-      } catch (err) {
-        console.error('Lỗi khi tải ảnh phụ:', err)
+        setProduct(res.data)
+      } catch (error) {
+        console.error('Lỗi khi lấy sản phẩm:', error)
+        setProduct(null)
+      } finally {
+        setLoading(false)
       }
     }
 
     loadProduct()
-    loadSubImages()
   }, [id])
 
-  if (!product) return <p>Đang tải sản phẩm...</p>
+  // Hiển thị "Đang tải..." khi dữ liệu chưa có
+  if (loading) {
+    return <div className="text-center my-5">Đang tải…</div>
+  }
 
-  // Gộp ảnh chính và phụ
-  const allImages = [
-    product.image_url,
-    ...subImages.map((img) => img.image_url),
-  ]
+  // Nếu đã tải xong nhưng không có sản phẩm (ví dụ ID không tồn tại)
+  if (!product) {
+    return <div className="text-center my-5">Không tìm thấy sản phẩm.</div>
+  }
+
+  // Tách dữ liệu từ product để truyền vào các component con
+  const {
+    name,
+    price,
+    original_price,
+    image_url,
+    category,
+    sold,
+    // variants,
+    reviews,
+  } = product
 
   return (
-    <div className="container mt-5">
-      <div className="row">
-        {/* Hình ảnh lớn */}
-        <div className="col-md-5">
-          <div className="border rounded mb-3">
-            <img
-              src={import.meta.env.VITE_API_URL + mainImage}
-              alt={product.name}
-              className="w-100"
-              style={{ maxHeight: '500px', objectFit: 'cover' }}
-            />
-          </div>
+    <div className="product-detail">
+      {/* Hình ảnh sản phẩm */}
+      <ProductImages images={image_url} />
 
-          {/* Ảnh phụ giống Shopee */}
-          <div className="d-flex gap-2 overflow-auto">
-            {allImages.map((img, i) => {
-              const fullUrl = import.meta.env.VITE_API_URL + img
-              return (
-                <img
-                  key={i}
-                  src={fullUrl}
-                  alt={`thumb-${i}`}
-                  onClick={() => setMainImage(img)}
-                  className="img-thumbnail"
-                  style={{
-                    width: '80px',
-                    height: '80px',
-                    objectFit: 'cover',
-                    border:
-                      mainImage === img ? '2px solid red' : '1px solid #ccc',
-                    cursor: 'pointer',
-                  }}
-                />
-              )
-            })}
-          </div>
-        </div>
+      {/* Thông tin + biến thể */}
+      <ProductInfo
+        name={name}
+        price={price}
+        original_price={original_price}
+        category={category}
+        sold={sold}
+      />
+      {/* <ProductVariants variants={variants} /> */}
 
-        {/* Thông tin sản phẩm */}
-        <div className="col-md-7">
-          <h3>{product.name}</h3>
-          <h4 className="text-danger">
-            {Number(product.price).toLocaleString()}₫
-          </h4>
-          <p>
-            <strong>Danh mục:</strong> {product.category}
-          </p>
-          <p>
-            <strong>Link TikTok:</strong>{' '}
-            <a
-              href={product.tiktok_link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {product.tiktok_link}
-            </a>
-          </p>
-        </div>
-      </div>
+      {/* Đánh giá */}
+      <ProductReviews reviews={reviews} />
+
+      {/* Thanh cố định dưới cùng */}
+      <BottomBar product={product} />
     </div>
   )
 }

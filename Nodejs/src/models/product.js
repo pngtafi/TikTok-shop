@@ -4,24 +4,28 @@ export default (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       description: DataTypes.TEXT,
-      image_url: DataTypes.TEXT,
-      price: DataTypes.DECIMAL(10, 2),
-      tiktok_link: DataTypes.TEXT,
-      category: DataTypes.STRING,
+      price: DataTypes.DECIMAL,
       original_price: DataTypes.DECIMAL,
+      image_url: DataTypes.TEXT,
+      category: DataTypes.STRING,
+      variants: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      reviews: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      sold: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
     },
     {
       tableName: 'Products',
       timestamps: true,
     }
   )
-
-  Product.associate = (models) => {
-    Product.hasMany(models.ProductImage, {
-      foreignKey: 'productId',
-      as: 'images',
-    })
-  }
 
   return Product
 }

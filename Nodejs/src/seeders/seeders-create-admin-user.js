@@ -1,11 +1,15 @@
 import bcrypt from 'bcryptjs'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export async function up(queryInterface, Sequelize) {
-  const hashedPassword = await bcrypt.hash('taiyeuhien', 10)
+  const plainPassword = process.env.ADMIN_PASSWORD
+  const hashedPassword = await bcrypt.hash(plainPassword, 10)
 
   return queryInterface.bulkInsert('Users', [
     {
-      email: 'phungtai99zz@gmail.com',
+      email: process.env.ADMIN_EMAIL,
       password: hashedPassword,
       role: 'admin',
       createdAt: new Date(),

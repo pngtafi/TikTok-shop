@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   fetchAllProducts,
   createProduct,
   deleteProduct,
   updateProduct,
   uploadImages,
-  uploadProductImages,
 } from '../services/productService'
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState([])
   const [form, setForm] = useState({
     name: '',
+    description: '',
     price: '',
-    tiktok_link: '',
+    original_price: '',
     category: '',
-    image_url: '',
   })
-  const [editingId, setEditingId] = useState(null)
+  const [selectedFiles, setSelectedFiles] = useState([])
+  const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  const [allFiles, setAllFiles] = useState([])
+  const [editingId, setEditingId] = useState(null)
 
   useEffect(() => {
     loadProducts()
@@ -28,11 +28,37 @@ const AdminDashboard = () => {
   const loadProducts = async () => {
     try {
       const res = await fetchAllProducts()
-      setProducts(res.data)
+      const parsed = res.data.map((p) => ({
+        ...p,
+        image_url: Array.isArray(p.image_url)
+          ? p.image_url
+          : JSON.parse(p.image_url || '[]'),
+      }))
+      setProducts(parsed)
     } catch (err) {
       console.error('Lỗi khi tải sản phẩm:', err)
       setError('Không tải được danh sách sản phẩm')
     }
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleFileChange = (e) => {
+    setSelectedFiles(e.target.files)
+  }
+
+  const handleEdit = (product) => {
+    setForm({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      original_price: product.original_price,
+      category: product.category || '',
+    })
+    setEditingId(product.id)
   }
 
   const handleDelete = async (id) => {
@@ -42,167 +68,171 @@ const AdminDashboard = () => {
     }
   }
 
-  const handleEdit = (product) => {
-    setForm({
-      name: product.name,
-      price: product.price,
-      tiktok_link: product.tiktok_link,
-      category: product.category || '',
-    })
-    setEditingId(product.id)
-  }
-
   const handleCancelEdit = () => {
     setForm({
       name: '',
+      description: '',
       price: '',
-      tiktok_link: '',
+      original_price: '',
       category: '',
-      image_url: '',
     })
+    setSelectedFiles([])
     setEditingId(null)
-    setAllFiles([])
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    if (!form.name || !form.price || !form.tiktok_link || !form.category) {
-      setError('Vui lòng điền đầy đủ thông tin!')
-      return
-    }
+    setMessage('')
 
     try {
-      let uploadedUrls = []
+      let imageUrls = []
 
-      if (allFiles.length > 0) {
+      if (selectedFiles.length > 0) {
         const formData = new FormData()
-        allFiles.forEach((file) => formData.append('images', file))
+        for (let file of selectedFiles) {
+          formData.append('images', file)
+        }
+
         const res = await uploadImages(formData)
-        uploadedUrls = res.image_urls || []
+
+        imageUrls = Array.isArray(res.image_urls)
+          ? res.image_urls.map((url) =>
+              url.startsWith('/uploads')
+                ? `${import.meta.env.VITE_API_URL}${url}`
+                : url
+            )
+          : []
       }
 
       const payload = {
         ...form,
-        price: Number(form.price), // ép kiểu
-        image_url: uploadedUrls[0] || '',
+        price: Number(form.price),
+        original_price: Number(form.original_price),
+        ...(imageUrls.length > 0 && { image_url: imageUrls }),
       }
 
-      let createdProduct
       if (editingId) {
         await updateProduct(editingId, payload)
+        setMessage('✅ Cập nhật sản phẩm thành công!')
       } else {
-        const res = await createProduct(payload)
-        createdProduct = res.data
-
-        if (allFiles.length > 1 && createdProduct?.id) {
-          const imageFormData = new FormData()
-          allFiles.slice(1).forEach((file) => {
-            imageFormData.append('images', file)
-          })
-
-          await uploadProductImages(createdProduct.id, imageFormData)
-        }
+        await createProduct(payload)
+        setMessage('✅ Thêm sản phẩm thành công!')
       }
 
+      await loadProducts()
+
+      // Reset form
       setForm({
         name: '',
+        description: '',
         price: '',
-        tiktok_link: '',
+        original_price: '',
         category: '',
-        image_url: '',
       })
-      setAllFiles([])
+      setSelectedFiles([])
       setEditingId(null)
-      loadProducts()
     } catch (err) {
-      console.error('Lỗi khi lưu sản phẩm:', err)
-      setError('Không thể lưu sản phẩm')
+      setMessage(`❌ Lỗi: ${err}`)
     }
   }
 
   return (
-    <div className="container mt-5">
-      <h3 className="mb-4">Quản lý Sản phẩm</h3>
+    <div className="container mt-4">
+      <h3>🛠 {editingId ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}</h3>
+      {message && <div className="alert alert-info mt-3">{message}</div>}
 
-      <form className="mb-4" onSubmit={handleSubmit}>
-        <div className="row g-3">
-          <div className="col-md-4">
-            <input
-              type="file"
-              className="form-control"
-              accept="image/*"
-              multiple
-              onChange={(e) => setAllFiles(Array.from(e.target.files))}
-            />
-          </div>
-          <div className="col-md-2">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Tên sản phẩm"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              required
-            />
-          </div>
-          <div className="col-md-2">
-            <input
-              type="number"
-              className="form-control"
-              placeholder="Giá"
-              value={form.price}
-              onChange={(e) => setForm({ ...form, price: e.target.value })}
-              required
-            />
-          </div>
-          <div className="col-md-2">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Link TikTok"
-              value={form.tiktok_link}
-              onChange={(e) =>
-                setForm({ ...form, tiktok_link: e.target.value })
-              }
-              required
-            />
-          </div>
-          <div className="col-md-2">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Danh mục"
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-            />
-          </div>
-          <div className="col-md-1 d-flex">
-            <button type="submit" className="btn btn-success w-100">
-              {editingId ? 'Lưu' : 'Thêm'}
-            </button>
-          </div>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div className="mb-3">
+          <label>Tên sản phẩm</label>
+          <input
+            type="text"
+            name="name"
+            className="form-control"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
         </div>
+
+        <div className="mb-3">
+          <label>Mô tả</label>
+          <textarea
+            name="description"
+            className="form-control"
+            value={form.description}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Giá</label>
+          <input
+            type="number"
+            name="price"
+            className="form-control"
+            value={form.price}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Giá gốc</label>
+          <input
+            type="number"
+            name="original_price"
+            className="form-control"
+            value={form.original_price}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Danh mục</label>
+          <input
+            type="text"
+            name="category"
+            className="form-control"
+            value={form.category}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Ảnh sản phẩm (chọn nhiều)</label>
+          <input
+            type="file"
+            multiple
+            className="form-control"
+            onChange={handleFileChange}
+          />
+        </div>
+
+        <button type="submit" className="btn btn-primary w-100">
+          {editingId ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm'}
+        </button>
+
         {editingId && (
-          <div className="mt-2">
-            <button
-              className="btn btn-secondary btn-sm"
-              onClick={handleCancelEdit}
-            >
-              Huỷ sửa
-            </button>
-          </div>
+          <button
+            type="button"
+            className="btn btn-secondary w-100 mt-2"
+            onClick={handleCancelEdit}
+          >
+            Huỷ chỉnh sửa
+          </button>
         )}
       </form>
 
-      <table className="table table-bordered table-hover">
+      <hr />
+      <h4 className="mt-4">📦 Danh sách sản phẩm</h4>
+
+      <table className="table table-bordered table-hover mt-3">
         <thead className="table-light">
           <tr>
             <th>ID</th>
             <th>Ảnh</th>
             <th>Tên</th>
             <th>Giá</th>
-            <th>Link TikTok</th>
             <th>Danh mục</th>
             <th>Hành động</th>
           </tr>
@@ -212,23 +242,26 @@ const AdminDashboard = () => {
             <tr key={p.id}>
               <td>{p.id}</td>
               <td>
-                <img
-                  src={import.meta.env.VITE_API_URL + p.image_url}
-                  alt={p.name}
-                  style={{ width: '60px', height: '60px', objectFit: 'cover' }}
-                />
+                {p.image_url?.length > 0 ? (
+                  p.image_url.map((img, index) => (
+                    <img
+                      key={index}
+                      src={img}
+                      alt={`${p.name}-${index}`}
+                      style={{
+                        width: '50px',
+                        height: '50px',
+                        objectFit: 'cover',
+                        marginRight: '4px',
+                      }}
+                    />
+                  ))
+                ) : (
+                  <span>Không có ảnh</span>
+                )}
               </td>
               <td>{p.name}</td>
               <td>{Number(p.price).toLocaleString()}₫</td>
-              <td>
-                <a
-                  href={p.tiktok_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Xem
-                </a>
-              </td>
               <td>{p.category}</td>
               <td>
                 <button

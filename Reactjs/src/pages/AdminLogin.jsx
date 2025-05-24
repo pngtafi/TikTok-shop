@@ -14,7 +14,21 @@ const AdminLogin = () => {
 
     try {
       const res = await loginAdmin(email, password)
-      localStorage.setItem('admin', JSON.stringify(res.user))
+
+      if (res.errCode !== 0) {
+        return setError(res.message || 'Đăng nhập thất bại')
+      }
+
+      const user = res.user || {}
+      const token = res.token || ''
+
+      if (user.role !== 'admin') {
+        return setError('Tài khoản không có quyền truy cập')
+      }
+
+      localStorage.setItem('admin', JSON.stringify(user))
+      localStorage.setItem('adminToken', token)
+
       navigate('/admin/dashboard')
     } catch (err) {
       setError(err)

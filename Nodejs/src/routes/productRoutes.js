@@ -7,7 +7,6 @@ import {
   deleteProduct,
   getProductById,
   uploadProductImages,
-  getProductImages,
 } from '../controllers/productController.js'
 
 const router = express.Router()
@@ -21,6 +20,5 @@ router.delete('/:id', deleteProduct)
 router.get('/:id', getProductById)
 
 router.post('/:id/images', upload.array('images'), uploadProductImages)
-router.get('/:id/images', getProductImages)
 
 export default router

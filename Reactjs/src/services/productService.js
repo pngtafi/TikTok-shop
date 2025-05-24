@@ -21,17 +21,9 @@ export const fetchProductById = (id) => {
 }
 
 export const uploadImages = (formData) => {
-  return axios.post('/api/upload', formData)
-}
-
-export const uploadProductImages = (productId, formData) => {
-  return axios.post(`/api/products/${productId}/images`, formData, {
+  return axios.post('/api/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   })
-}
-
-export const fetchProductImages = (productId) => {
-  return axios.get(`/api/products/${productId}/images`)
 }

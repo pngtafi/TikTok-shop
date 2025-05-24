@@ -6,15 +6,36 @@ export async function up(queryInterface, Sequelize) {
       primaryKey: true,
       type: Sequelize.INTEGER,
     },
-    name: Sequelize.STRING,
-    description: Sequelize.TEXT,
-    image_url: Sequelize.TEXT,
-    price: Sequelize.DECIMAL(10, 2),
-    tiktok_link: Sequelize.TEXT,
-    category: Sequelize.STRING,
-    original_price: Sequelize.DECIMAL,
-    createdAt: Sequelize.DATE,
-    updatedAt: Sequelize.DATE,
+    name: {
+      type: Sequelize.STRING,
+    },
+    description: {
+      type: Sequelize.TEXT,
+    },
+    price: {
+      type: Sequelize.DECIMAL,
+    },
+    original_price: {
+      type: Sequelize.DECIMAL,
+    },
+    image_url: {
+      type: Sequelize.TEXT,
+    },
+    category: {
+      type: Sequelize.STRING,
+    },
+    created_at: {
+      allowNull: false,
+      type: Sequelize.DATE,
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+    },
+    updated_at: {
+      allowNull: false,
+      type: Sequelize.DATE,
+      defaultValue: Sequelize.literal(
+        'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
+      ),
+    },
   })
 }
 

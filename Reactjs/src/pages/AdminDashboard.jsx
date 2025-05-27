@@ -6,6 +6,7 @@ import {
   updateProduct,
   uploadImages,
 } from '../services/productService'
+import { exportOrders } from '../services/orderService'
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState([])
@@ -21,8 +22,30 @@ const AdminDashboard = () => {
   const [error, setError] = useState('')
   const [editingId, setEditingId] = useState(null)
 
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+
   useEffect(() => {
     loadProducts()
+
+    const now = new Date()
+    const todayEnd = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23,
+      59
+    )
+    const yesterdayStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - 1,
+      0,
+      0
+    )
+
+    setStartDate(yesterdayStart.toISOString().slice(0, 16))
+    setEndDate(todayEnd.toISOString().slice(0, 16))
   }, [])
 
   const loadProducts = async () => {
@@ -136,6 +159,31 @@ const AdminDashboard = () => {
     }
   }
 
+  const handleExport = async () => {
+    setMessage('')
+    setError('')
+
+    try {
+      const res = await exportOrders(
+        new Date(startDate).toISOString(),
+        new Date(endDate).toISOString()
+      )
+
+      const blob = new Blob([res], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'orders-export.xlsx'
+      a.click()
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error('Lỗi export:', err)
+      setError('❌ Lỗi xuất đơn hàng: ' + err.message)
+    }
+  }
+
   return (
     <div className="container mt-4">
       <h3>🛠 {editingId ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}</h3>
@@ -224,7 +272,33 @@ const AdminDashboard = () => {
       </form>
 
       <hr />
-      <h4 className="mt-4">📦 Danh sách sản phẩm</h4>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label>Từ thời gian:</label>
+          <input
+            type="datetime-local"
+            className="form-control"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+        </div>
+        <div className="col-md-6">
+          <label>Đến thời gian:</label>
+          <input
+            type="datetime-local"
+            className="form-control"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="d-flex justify-content-between align-items-center mt-5 mb-2">
+        <h4>📦 Danh sách sản phẩm</h4>
+        <button className="btn btn-success" onClick={handleExport}>
+          ⬇️ Export Đơn Hàng (Excel)
+        </button>
+      </div>
 
       <table className="table table-bordered table-hover mt-3">
         <thead className="table-light">

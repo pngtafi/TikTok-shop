@@ -5,6 +5,7 @@ import ProductImages from '../components/ProductImages'
 import ProductInfo from '../components/ProductInfo'
 import ProductVariants from '../components/ProductVariants'
 import ProductReviews from '../components/ProductReviews'
+import ProductDescription from '../components/ProductDescription'
 import BottomBar from '../components/BottomBar'
 import { fetchProductById } from '../services/productService'
 
@@ -18,6 +19,19 @@ function ProductDetail() {
       try {
         const res = await fetchProductById(id)
         setProduct(res.data)
+        if (typeof ttq !== 'undefined' && res.data) {
+          ttq.track('ViewContent', {
+            contents: [
+              {
+                content_id: res.data.id,
+                content_type: 'product',
+                content_name: res.data.name,
+              },
+            ],
+            value: res.data.price,
+            currency: 'VND',
+          })
+        }
       } catch (error) {
         console.error('Lỗi khi lấy sản phẩm:', error)
         setProduct(null)
@@ -68,6 +82,9 @@ function ProductDetail() {
 
       {/* Đánh giá */}
       <ProductReviews reviews={reviews} />
+
+      {/* Mô tả sản phẩm */}
+      <ProductDescription description={product.description} />
 
       {/* Thanh cố định dưới cùng */}
       <BottomBar product={product} />

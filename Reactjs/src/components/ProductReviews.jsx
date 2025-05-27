@@ -15,7 +15,7 @@ function ProductReviews({ reviews }) {
   //   '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating))
 
   return (
-    <div className="product-reviews" style={{ marginBottom: '43px' }}>
+    <div className="product-reviews">
       {/* Tổng quan đánh giá */}
       <div className="d-flex justify-content-between align-items-center px-2 border-bottom">
         <div style={{ fontSize: '1.1rem', padding: '8px 0' }}>
@@ -35,18 +35,25 @@ function ProductReviews({ reviews }) {
       {reviews.length === 0 ? (
         <p className="px-2">Chưa có đánh giá nào.</p>
       ) : (
-        <ul className="list-unstyled pb-5 px-2">
+        <ul className="list-unstyled m-0">
           {reviews.map((review, index) => {
             const stars =
               '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating)
+            const isLast = index === reviews.length - 1
             return (
-              <li key={index} className="border-bottom pb-3">
+              <li
+                key={index}
+                className={!isLast ? 'border-bottom' : ''}
+                style={{
+                  padding: '10px',
+                  ...(isLast && {
+                    borderBottom: '10px solid rgb(238, 238, 238)',
+                  }),
+                }}
+              >
                 {/* Tên người dùng và số sao */}
                 <div className="mb-1 d-flex justify-content-between mt-2">
                   <strong>{review.user}</strong>
-                  <span className="text-muted" style={{ fontSize: '0.85rem' }}>
-                    Hữu ích (2)
-                  </span>
                 </div>
                 <div className="text-warning mb-1">{stars}</div>
 
@@ -68,7 +75,7 @@ function ProductReviews({ reviews }) {
 
                 {/* Hình ảnh đính kèm */}
                 {review.images?.length > 0 && (
-                  <div>
+                  <div className="mb-3">
                     {review.images.map((imgUrl, i) => (
                       <img
                         key={i}

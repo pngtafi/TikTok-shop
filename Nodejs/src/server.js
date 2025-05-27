@@ -7,6 +7,7 @@ import { connectDB, sequelize } from './config/connectDB.js'
 import productRoutes from './routes/productRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
+import orderRoutes from './routes/orderRoutes.js'
 
 dotenv.config()
 const app = express()
@@ -29,6 +30,8 @@ app.use('/api', authRoutes)
 
 app.use('/uploads', express.static('uploads'))
 app.use('/api/upload', uploadRoutes)
+
+app.use('/api/orders', orderRoutes)
 
 // Health check
 app.get('/', (req, res) => {

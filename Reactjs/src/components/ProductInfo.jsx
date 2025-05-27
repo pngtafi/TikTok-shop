@@ -121,7 +121,7 @@ function ProductInfo({ name, price, original_price, sold }) {
             className="bi bi-credit-card"
             style={{ fontSize: '1.1rem', color: '#ec4899', marginRight: '6px' }}
           ></i>
-          <div style={{ fontSize: '0.9rem' }}>SPayLater: Mua trước trả sau</div>
+          <div style={{ fontSize: '0.9rem' }}>Thanh toán khi nhận hàng</div>
         </div>
       </div>
 

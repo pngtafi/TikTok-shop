@@ -1,22 +1,11 @@
 import db from '../models/index.js'
 const Product = db.Product
 
-const parseImageUrl = (product) => {
-  try {
-    if (product.image_url) {
-      product.image_url = JSON.parse(product.image_url)
-    }
-  } catch (err) {
-    product.image_url = []
-  }
-  return product
-}
-
 export const getAllProductsService = async () => {
   try {
-    let products = await Product.findAll()
-    products = products.map((p) => parseImageUrl(p.toJSON()))
-    return { errCode: 0, message: 'OK', data: products }
+    const products = await Product.findAll()
+    const data = products.map((p) => p.toJSON())
+    return { errCode: 0, message: 'OK', data }
   } catch (err) {
     return { errCode: 1, message: 'Lỗi khi lấy sản phẩm', error: err.message }
   }
@@ -25,19 +14,14 @@ export const getAllProductsService = async () => {
 export const createProductService = async (data) => {
   console.log('📥 Backend nhận:', data)
   try {
-    const { name, price, category, image_url } = data
+    const { name, price, category } = data
 
     if (!name || !price || !category) {
       return { errCode: 2, message: 'Thiếu thông tin bắt buộc' }
     }
 
-    if (Array.isArray(data.image_url)) {
-      data.image_url = JSON.stringify(data.image_url)
-    }
-
     const newProduct = await Product.create(data)
-    const parsed = parseImageUrl(newProduct.toJSON())
-    return { errCode: 0, message: 'Tạo thành công', data: parsed }
+    return { errCode: 0, message: 'Tạo thành công', data: newProduct.toJSON() }
   } catch (err) {
     return { errCode: 1, message: 'Lỗi khi tạo sản phẩm', error: err.message }
   }
@@ -48,14 +32,14 @@ export const updateProductService = async (id, data) => {
     const product = await Product.findByPk(id)
     if (!product) return { errCode: 3, message: 'Không tìm thấy sản phẩm' }
 
-    if (Array.isArray(data.image_url)) {
-      data.image_url = JSON.stringify(data.image_url)
-    }
-
     await Product.update(data, { where: { id } })
+
     const updated = await Product.findByPk(id)
-    const parsed = parseImageUrl(updated.toJSON())
-    return { errCode: 0, message: 'Cập nhật thành công', data: parsed }
+    return {
+      errCode: 0,
+      message: 'Cập nhật thành công',
+      data: updated.toJSON(),
+    }
   } catch (err) {
     return { errCode: 1, message: 'Lỗi khi cập nhật', error: err.message }
   }
@@ -84,11 +68,9 @@ export const getProductServiceById = async (id) => {
       }
     }
 
-    const parsed = parseImageUrl(product.toJSON())
-
     return {
       errCode: 0,
-      data: parsed,
+      data: product.toJSON(),
     }
   } catch (error) {
     return {
@@ -107,17 +89,17 @@ export const uploadProductImagesService = async (productId, files) => {
       return { errCode: 2, message: 'Không có file nào được upload' }
     }
 
-    const newUrls = files.map((file) => `/uploads/${file.filename}`)
+    const current = Array.isArray(product.image_url) ? product.image_url : []
 
-    let current = []
-    try {
-      current = JSON.parse(product.image_url || '[]')
-    } catch (err) {}
+    const newUrls = files.map((file, index) => ({
+      url: `/uploads/${file.filename}`,
+      name: `ảnh ${current.length + index + 1}`,
+    }))
 
     const updatedUrls = [...current, ...newUrls]
 
     await Product.update(
-      { image_url: JSON.stringify(updatedUrls) },
+      { image_url: updatedUrls },
       { where: { id: productId } }
     )
 

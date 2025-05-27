@@ -18,9 +18,12 @@ export const sendTikTokEvent = async (eventData) => {
     event_id: eventData.eventId, // Id duy nhất cho event (dùng để gộp trùng)
     timestamp: Math.floor(Date.now() / 1000), // Thời gian (Unix timestamp, giây)
     context: {
-      // Có thể thêm thông tin ngữ cảnh như ip, user agent, user email, v.v.
-      // user: { /* email đã hash, phone đã hash, ... */ },
-      // page: { url, referrer, ... },
+      page: {
+        url: eventData.url || 'https://tik-tok-shop-five.vercel.app',
+      },
+      user: {
+        external_id: eventData.userId || 'unknown_user',
+      },
     },
   }
 

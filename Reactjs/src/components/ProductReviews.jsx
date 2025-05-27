@@ -3,30 +3,32 @@ import React from 'react'
 function ProductReviews({ reviews }) {
   if (!reviews) return null
 
-  const totalRatings = reviews.length
-  const avgRating =
-    totalRatings > 0
-      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / totalRatings).toFixed(
-          1
-        )
-      : 0
-
-  // const avgStars =
-  //   '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating))
+  const totalRatings = '1,5k' // 🔢 Giả lập tổng số đánh giá
+  const avgRating = 4.9 // 🔒 Cố định giá trung bình sao
 
   return (
     <div className="product-reviews">
       {/* Tổng quan đánh giá */}
       <div className="d-flex justify-content-between align-items-center px-2 border-bottom">
-        <div style={{ fontSize: '1.1rem', padding: '8px 0' }}>
+        <div
+          className="d-flex align-items-center gap-1"
+          style={{ fontSize: '1.1rem' }}
+        >
           <strong>{avgRating}</strong>{' '}
-          <span className="text-warning" style={{ fontSize: '1rem' }}>
+          <span
+            className="text-warning"
+            style={{ fontSize: '1.2rem', position: 'relative', top: '-2.2px' }}
+          >
             ★
           </span>{' '}
-          <span style={{ fontWeight: 500 }}>Đánh Giá Sản Phẩm</span>{' '}
-          <span className="text-muted">({totalRatings})</span>
+          <span style={{ fontWeight: 500, fontSize: '0.9rem' }}>
+            Đánh Giá Sản Phẩm
+          </span>{' '}
+          <span className="text-muted" style={{ fontSize: '0.9rem' }}>
+            ({totalRatings})
+          </span>
         </div>
-        <div className="text-primary" style={{ fontSize: '0.9rem' }}>
+        <div className="text-muted" style={{ fontSize: '0.9rem' }}>
           Tất cả &gt;
         </div>
       </div>
@@ -36,10 +38,10 @@ function ProductReviews({ reviews }) {
         <p className="px-2">Chưa có đánh giá nào.</p>
       ) : (
         <ul className="list-unstyled m-0">
-          {reviews.map((review, index) => {
+          {reviews.slice(0, 3).map((review, index) => {
             const stars =
               '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating)
-            const isLast = index === reviews.length - 1
+            const isLast = index === 2
             return (
               <li
                 key={index}
@@ -51,16 +53,12 @@ function ProductReviews({ reviews }) {
                   }),
                 }}
               >
-                {/* Tên người dùng và số sao */}
                 <div className="mb-1 d-flex justify-content-between mt-2">
                   <strong>{review.user}</strong>
                 </div>
                 <div className="text-warning mb-1">{stars}</div>
-
-                {/* Nội dung đánh giá */}
                 <div className="mb-1">{review.content}</div>
 
-                {/* Phân loại hàng */}
                 {review.variant && (
                   <div
                     className="mb-1 text-muted"
@@ -73,7 +71,6 @@ function ProductReviews({ reviews }) {
                   </div>
                 )}
 
-                {/* Hình ảnh đính kèm */}
                 {review.images?.length > 0 && (
                   <div className="mb-3">
                     {review.images.map((imgUrl, i) => (

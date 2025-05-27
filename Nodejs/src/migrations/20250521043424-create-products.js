@@ -19,7 +19,7 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.DECIMAL,
     },
     image_url: {
-      type: Sequelize.TEXT,
+      type: Sequelize.JSON,
     },
     category: {
       type: Sequelize.STRING,

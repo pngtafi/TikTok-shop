@@ -6,7 +6,7 @@ export default (sequelize, DataTypes) => {
       description: DataTypes.TEXT,
       price: DataTypes.DECIMAL,
       original_price: DataTypes.DECIMAL,
-      image_url: DataTypes.TEXT,
+      image_url: DataTypes.JSON,
       category: DataTypes.STRING,
       variants: {
         type: DataTypes.JSON,

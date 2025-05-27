@@ -31,25 +31,25 @@ const FlashSaleTimer = () => {
       }}
     >
       <div className="d-flex align-items-center gap-1 flash-sale-text">
-        <span style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>F</span>
+        <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>F</span>
         <i
           className="bi bi-lightning-fill"
           style={{
             color: '#fff200',
-            fontSize: '1.6rem',
+            fontSize: '1.1rem',
             marginBottom: '1px',
             marginLeft: '-6px',
           }}
         ></i>
         <span
-          style={{ fontWeight: 'bold', fontSize: '1.5rem', marginLeft: '-9px' }}
+          style={{ fontWeight: 'bold', fontSize: '1rem', marginLeft: '-7px' }}
         >
           ASH SALE
         </span>
       </div>
       <div className="d-flex gap-1 align-items-center">
         <span
-          style={{ fontWeight: 'bold', fontSize: '0.8rem', marginLeft: '-9px' }}
+          style={{ fontWeight: 600, fontSize: '0.6rem', marginLeft: '-9px' }}
         >
           KẾT THÚC SAU
         </span>{' '}

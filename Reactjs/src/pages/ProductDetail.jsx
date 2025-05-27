@@ -69,6 +69,7 @@ function ProductDetail() {
     <div className="product-detail">
       {/* Hình ảnh sản phẩm */}
       <ProductImages images={image_url} />
+      {console.log('🖼 image_url:', product.image_url)}
 
       {/* Thông tin + biến thể */}
       <ProductInfo

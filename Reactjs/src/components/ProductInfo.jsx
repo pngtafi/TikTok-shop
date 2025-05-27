@@ -50,7 +50,7 @@ function ProductInfo({ name, price, original_price, sold }) {
         </div>
 
         <div
-          className="text-muted me-3"
+          className="text-muted me-2"
           style={{ fontSize: '0.9rem', fontWeight: 500 }}
         >
           Đã bán {formatSold(sold)}

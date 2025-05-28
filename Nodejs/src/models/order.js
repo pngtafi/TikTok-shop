@@ -40,7 +40,7 @@ export default (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'Orders',
+      tableName: 'orders',
       timestamps: true,
     }
   )

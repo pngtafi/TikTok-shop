@@ -11,7 +11,10 @@ function ProductPurchaseModal({ show, onClose, product }) {
   if (!show || !product) return null
 
   const { price, original_price, image_url, variants } = product
-  const { sizes = [], colors = [] } = variants || {}
+  const { sizes = [] } = variants || {}
+
+  const selectedImageObj = image_url?.find((img) => img.name === selectedColor)
+  const displayPrice = selectedImageObj?.price || product.price
 
   const handleQuantityChange = (delta) => {
     setQuantity((prev) => Math.max(1, prev + delta))
@@ -39,23 +42,23 @@ function ProductPurchaseModal({ show, onClose, product }) {
           {/* Ảnh và giá */}
           <div className="d-flex">
             <img
-              src={Array.isArray(image_url) ? image_url[0] : image_url}
+              src={
+                selectedImageObj?.url ||
+                (Array.isArray(image_url) ? image_url[0].url : image_url)
+              }
               alt="product"
               style={{ width: '80px', height: '80px', objectFit: 'cover' }}
               className="me-2 rounded"
             />
             <div>
               <div className="text-danger fw-bold fs-5">
-                ₫{Number(price).toLocaleString('vi-VN')}
+                ₫{Number(displayPrice).toLocaleString('vi-VN')}
               </div>
               {original_price && original_price > price && (
                 <div className="text-muted text-decoration-line-through">
                   ₫{Number(original_price).toLocaleString('vi-VN')}
                 </div>
               )}
-              <div className="text-muted small">
-                Giá tại Chương trình Flash Sale
-              </div>
               <div className="text-muted small">
                 Kho: {product.stock || 1000}
               </div>
@@ -65,22 +68,34 @@ function ProductPurchaseModal({ show, onClose, product }) {
           <button onClick={onClose} className="btn-close" />
         </div>
 
-        {/* Chọn màu sắc */}
-        {colors?.length > 0 && (
+        {/* Chọn mẫu từ image_url */}
+        {Array.isArray(image_url) && image_url.length > 0 && (
           <div className="mt-3">
-            <div className="fw-bold mb-2">Màu sắc</div>
+            <div className="fw-bold mb-2">Chọn mẫu</div>
             <div className="d-flex flex-wrap gap-2">
-              {colors.map((color) => (
+              {image_url.map((img) => (
                 <button
-                  key={color}
+                  key={img.name}
                   className={`btn btn-sm ${
-                    selectedColor === color
-                      ? 'btn-danger text-white'
-                      : 'btn-outline-secondary'
-                  }`}
-                  onClick={() => setSelectedColor(color)}
+                    selectedColor === img.name
+                      ? 'border-danger text-danger'
+                      : 'text-dark'
+                  } d-flex align-items-center`}
+                  onClick={() => setSelectedColor(img.name)}
+                  style={{ backgroundColor: 'rgb(244 246 250)' }}
                 >
-                  {color}
+                  <img
+                    src={img.url}
+                    alt={img.name}
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      objectFit: 'cover',
+                      marginRight: '4px',
+                    }}
+                    className="rounded"
+                  />
+                  {img.name}
                 </button>
               ))}
             </div>
@@ -97,14 +112,15 @@ function ProductPurchaseModal({ show, onClose, product }) {
                   key={size}
                   className={`btn btn-sm ${
                     selectedSize === size
-                      ? 'btn-danger text-white'
-                      : 'btn-outline-secondary'
+                      ? 'border-danger text-danger'
+                      : 'text-dark'
                   }`}
                   style={{
                     width: '60px',
                     height: '36px',
                     fontSize: '0.9rem',
                     padding: 0,
+                    backgroundColor: 'rgb(244 246 250)',
                   }}
                   onClick={() => setSelectedSize(size)}
                 >

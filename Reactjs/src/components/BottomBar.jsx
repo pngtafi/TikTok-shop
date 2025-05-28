@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import ProductPurchaseModal from './ProductPurchaseModal'
 
-function BottomBar({ product }) {
+function BottomBar({ product, selectedImage }) {
   const [showModal, setShowModal] = useState(false)
-  const price = product?.price
+  const displayPrice = selectedImage?.price || product?.price
 
   return (
     <>
@@ -21,7 +21,7 @@ function BottomBar({ product }) {
           >
             <span style={{ fontSize: '0.8rem' }}>Mua với voucher</span>
             <span style={{ fontSize: '1.1rem', fontWeight: 600 }}>
-              ₫{Number(price).toLocaleString('vi-VN')}
+              ₫{Number(displayPrice).toLocaleString('vi-VN')}
             </span>
           </button>
         </div>

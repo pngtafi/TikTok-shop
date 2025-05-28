@@ -17,7 +17,12 @@ function CheckoutPage() {
     return <div className="container py-3">Không có dữ liệu sản phẩm.</div>
   }
 
-  const total = Number(product.price) * quantity
+  const selectedImage = Array.isArray(product.image_url)
+    ? product.image_url.find((img) => img.name === variant.color)
+    : null
+
+  const displayPrice = selectedImage?.price || product.price
+  const total = Number(displayPrice) * quantity
 
   const handleOrder = async () => {
     if (!name || !phone || !address) {
@@ -37,11 +42,11 @@ function CheckoutPage() {
         color: variant.color,
         size: variant.size,
         quantity,
-        price: product.price,
+        price: displayPrice,
       })
 
       ttq.track('CompletePayment', {
-        value: product.price, // Tổng giá trị đơn hàng
+        value: displayPrice, // Tổng giá trị đơn hàng
         currency: 'VND', // Đơn vị tiền tệ
         content_id: product.id, // ID sản phẩm (nếu có)
         content_type: 'product', // Loại nội dung
@@ -114,9 +119,10 @@ function CheckoutPage() {
         <div className="d-flex">
           <img
             src={
-              Array.isArray(product.image_url)
-                ? product.image_url[0]
-                : product.image_url
+              selectedImage?.url ||
+              (Array.isArray(product.image_url)
+                ? product.image_url[0].url
+                : product.image_url)
             }
             alt="product"
             width="60"
@@ -131,7 +137,7 @@ function CheckoutPage() {
               {quantity}
             </div>
             <div className="text-danger mt-1">
-              ₫{Number(product.price).toLocaleString('vi-VN')}
+              ₫{Number(displayPrice).toLocaleString('vi-VN')}
             </div>
           </div>
         </div>

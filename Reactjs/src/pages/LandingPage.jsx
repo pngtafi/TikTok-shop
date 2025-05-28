@@ -38,7 +38,7 @@ const LandingPage = () => {
               {/* Ảnh chính */}
               <div className="mb-3 w-100 text-center">
                 <img
-                  src={product.image_url[0]}
+                  src={product.image_url[0].url}
                   alt={product.name}
                   style={{
                     width: '100%',

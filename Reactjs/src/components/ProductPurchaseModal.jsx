@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './ProductPurchaseModal.css'
 import { useNavigate } from 'react-router-dom'
 
-function ProductPurchaseModal({ show, onClose, product }) {
-  const [selectedColor, setSelectedColor] = useState(null)
+function ProductPurchaseModal({
+  show,
+  onClose,
+  product,
+  selectedColor: propSelectedColor,
+}) {
+  const [selectedColor, setSelectedColor] = useState(propSelectedColor || null)
   const [selectedSize, setSelectedSize] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (propSelectedColor) {
+      setSelectedColor(propSelectedColor)
+    }
+  }, [propSelectedColor])
 
   if (!show || !product) return null
 
@@ -73,31 +84,34 @@ function ProductPurchaseModal({ show, onClose, product }) {
           <div className="mt-3">
             <div className="fw-bold mb-2">Chọn mẫu</div>
             <div className="d-flex flex-wrap gap-2">
-              {image_url.map((img) => (
-                <button
-                  key={img.name}
-                  className={`btn btn-sm ${
-                    selectedColor === img.name
-                      ? 'border-danger text-danger'
-                      : 'text-dark'
-                  } d-flex align-items-center`}
-                  onClick={() => setSelectedColor(img.name)}
-                  style={{ backgroundColor: 'rgb(244 246 250)' }}
-                >
-                  <img
-                    src={img.url}
-                    alt={img.name}
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      objectFit: 'cover',
-                      marginRight: '4px',
-                    }}
-                    className="rounded"
-                  />
-                  {img.name}
-                </button>
-              ))}
+              {image_url.map((img, index) => {
+                if (img.name === 'Ảnh tham khảo') return null
+                return (
+                  <button
+                    key={`${img.name}-${index}`}
+                    className={`btn btn-sm ${
+                      selectedColor === img.name
+                        ? 'border-danger text-danger'
+                        : 'text-dark'
+                    } d-flex align-items-center`}
+                    onClick={() => setSelectedColor(img.name)}
+                    style={{ backgroundColor: 'rgb(244 246 250)' }}
+                  >
+                    <img
+                      src={img.url}
+                      alt={img.name}
+                      style={{
+                        width: '24px',
+                        height: '24px',
+                        objectFit: 'cover',
+                        marginRight: '4px',
+                      }}
+                      className="rounded"
+                    />
+                    {img.name}
+                  </button>
+                )
+              })}
             </div>
           </div>
         )}

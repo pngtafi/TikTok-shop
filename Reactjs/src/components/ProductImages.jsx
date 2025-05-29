@@ -85,31 +85,34 @@ function ProductImages({ images, onSelect }) {
           padding: '0 8px 8px 8px',
         }}
       >
-        {images.map((img, index) => (
-          <div
-            key={img.name}
-            ref={(el) => (thumbnailRefs.current[index] = el)}
-            style={{ position: 'relative', flex: '0 0 auto' }}
-            onClick={() => setSelectedIndex(index)}
-          >
-            <img
-              src={img.url}
-              alt={img.name}
-              title={img.name}
-              className={`img-thumbnail ${
-                index === selectedIndex ? 'border border-primary' : ''
-              }`}
-              style={{
-                width: '60px',
-                height: '60px',
-                objectFit: 'cover',
-                cursor: 'pointer',
-                padding: 0,
-                borderRadius: 0,
-              }}
-            />
-          </div>
-        ))}
+        {images.map((img, index) => {
+          if (img.name === 'Ảnh tham khảo') return null // ẩn thumbnail
+          return (
+            <div
+              key={`${img.name}-${index}`}
+              ref={(el) => (thumbnailRefs.current[index] = el)}
+              style={{ position: 'relative', flex: '0 0 auto' }}
+              onClick={() => setSelectedIndex(index)}
+            >
+              <img
+                src={img.url}
+                alt={img.name}
+                title={img.name}
+                className={`img-thumbnail ${
+                  index === selectedIndex ? 'border border-primary' : ''
+                }`}
+                style={{
+                  width: '60px',
+                  height: '60px',
+                  objectFit: 'cover',
+                  cursor: 'pointer',
+                  padding: 0,
+                  borderRadius: 0,
+                }}
+              />
+            </div>
+          )
+        })}
       </div>
     </div>
   )

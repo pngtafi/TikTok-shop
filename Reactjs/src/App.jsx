@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import LandingPage from './pages/LandingPage'
+import RedirectToFirstProduct from './components/RedirectToFirstProduct'
+// import LandingPage from './pages/LandingPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import ProductDetail from './pages/ProductDetail'
 import AdminLogin from './pages/AdminLogin'
@@ -11,7 +12,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<RedirectToFirstProduct />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route

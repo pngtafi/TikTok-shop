@@ -1,13 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import FlipNumber from './FlipNumber'
 
+const TOTAL_TIME = 3 * 60 * 60
+
 const FlashSaleTimer = () => {
-  const [timeLeft, setTimeLeft] = useState(3 * 60 * 60)
+  const [timeLeft, setTimeLeft] = useState(TOTAL_TIME)
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0))
-    }, 1000)
+    const storedStartTime = localStorage.getItem('flashSaleStartTime')
+    let startTime = storedStartTime ? parseInt(storedStartTime, 10) : null
+
+    const now = Math.floor(Date.now() / 1000)
+
+    // Nếu chưa có startTime hoặc đã hết 3h thì tạo mới
+    if (!startTime || now - startTime >= TOTAL_TIME) {
+      startTime = now
+      localStorage.setItem('flashSaleStartTime', startTime)
+    }
+
+    const updateTimer = () => {
+      const now = Math.floor(Date.now() / 1000)
+      let elapsed = now - startTime
+      if (elapsed >= TOTAL_TIME) {
+        // Reset vòng mới
+        startTime = now
+        localStorage.setItem('flashSaleStartTime', startTime)
+        elapsed = 0
+      }
+      setTimeLeft(TOTAL_TIME - elapsed)
+    }
+
+    updateTimer()
+    const timer = setInterval(updateTimer, 1000)
     return () => clearInterval(timer)
   }, [])
 

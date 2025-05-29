@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
+import MediaPreviewModal from './MediaPreviewModal'
 
 function ProductReviews({ reviews }) {
+  const [previewIndex, setPreviewIndex] = useState(null)
+  const [previewList, setPreviewList] = useState([])
+
   if (!reviews) return null
 
   const totalRatings = '1,5k' // 🔢 Giả lập tổng số đánh giá
@@ -53,7 +57,20 @@ function ProductReviews({ reviews }) {
                   }),
                 }}
               >
-                <div className="mb-1 d-flex justify-content-between mt-2">
+                <div className="mb-2 d-flex align-items-center gap-2">
+                  <img
+                    src={
+                      review.icon ||
+                      'https://cdn-icons-png.flaticon.com/512/847/847969.png'
+                    }
+                    alt="avatar"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                    }}
+                  />
                   <strong>{review.user}</strong>
                 </div>
                 <div className="text-warning mb-1">{stars}</div>
@@ -72,20 +89,49 @@ function ProductReviews({ reviews }) {
                 )}
 
                 {review.images?.length > 0 && (
-                  <div className="mb-3">
-                    {review.images.map((imgUrl, i) => (
-                      <img
-                        key={i}
-                        src={imgUrl}
-                        alt="review-img"
-                        className="me-2 mb-2 img-thumbnail"
-                        style={{
-                          width: '60px',
-                          height: '60px',
-                          objectFit: 'cover',
-                        }}
-                      />
-                    ))}
+                  <div className="mb-3 d-flex flex-wrap gap-2">
+                    {review.images.map((mediaUrl, i) => {
+                      const isVideo = mediaUrl.endsWith('.mp4')
+                      return isVideo ? (
+                        <video
+                          key={i}
+                          muted
+                          loop
+                          playsInline
+                          onClick={() => {
+                            setPreviewList(review.images)
+                            setPreviewIndex(i)
+                          }}
+                          style={{
+                            width: '80px',
+                            height: '80px',
+                            objectFit: 'cover',
+                            backgroundColor: '#000',
+                            cursor: 'pointer',
+                            borderRadius: '6px',
+                          }}
+                        >
+                          <source src={mediaUrl} type="video/mp4" />
+                        </video>
+                      ) : (
+                        <img
+                          key={i}
+                          src={mediaUrl}
+                          alt="review-img"
+                          onClick={() => {
+                            setPreviewList(review.images)
+                            setPreviewIndex(i)
+                          }}
+                          className="img-thumbnail"
+                          style={{
+                            width: '80px',
+                            height: '80px',
+                            objectFit: 'cover',
+                            cursor: 'pointer',
+                          }}
+                        />
+                      )
+                    })}
                   </div>
                 )}
               </li>
@@ -93,6 +139,14 @@ function ProductReviews({ reviews }) {
           })}
         </ul>
       )}
+
+      <MediaPreviewModal
+        show={previewIndex !== null}
+        mediaList={previewList}
+        currentIndex={previewIndex}
+        onClose={() => setPreviewIndex(null)}
+        setCurrentIndex={setPreviewIndex}
+      />
     </div>
   )
 }

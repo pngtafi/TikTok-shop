@@ -12,6 +12,7 @@ function ProductInfo({ name, price, original_price, sold }) {
 
   function getDateRange() {
     const today = new Date()
+    today.setDate(today.getDate() + 1)
     const options = { day: '2-digit', month: 'short' }
 
     const start = today.toLocaleDateString('vi-VN', options).replace('.', '')

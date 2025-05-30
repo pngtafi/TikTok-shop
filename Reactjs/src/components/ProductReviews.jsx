@@ -35,7 +35,7 @@ function ProductReviews({ reviews }) {
 
   if (!reviews) return null
 
-  const totalRatings = '1,5k' // 🔢 Giả lập tổng số đánh giá
+  const totalRatings = '5,1k' // 🔢 Giả lập tổng số đánh giá
   const avgRating = 4.9 // 🔒 Cố định giá trung bình sao
 
   return (
@@ -63,6 +63,41 @@ function ProductReviews({ reviews }) {
         <div className="text-muted" style={{ fontSize: '0.9rem' }}>
           Tất cả &gt;
         </div>
+      </div>
+
+      {/* Bộ lọc theo sao và hình ảnh */}
+      <div
+        className="d-flex flex-nowrap gap-2 px-2 py-2 border-bottom"
+        style={{ fontSize: '0.75rem' }}
+      >
+        <button className="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1 text-dark">
+          <i className="bi bi-image me-1" style={{ fontSize: '0.85rem' }}></i>
+          254
+        </button>
+
+        <button className="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1 text-dark">
+          <i
+            className="bi bi-star-fill text-warning me-1"
+            style={{ fontSize: '0.85rem' }}
+          ></i>
+          5 (4,6k)
+        </button>
+
+        <button className="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1 text-dark">
+          <i
+            className="bi bi-star-fill text-warning me-1"
+            style={{ fontSize: '0.85rem' }}
+          ></i>
+          4 (449)
+        </button>
+
+        <button className="btn btn-outline-secondary btn-sm rounded-pill px-2 py-1 text-dark">
+          <i
+            className="bi bi-star-fill text-warning me-1"
+            style={{ fontSize: '0.85rem' }}
+          ></i>
+          3 (29)
+        </button>
       </div>
 
       {/* Danh sách đánh giá */}

@@ -126,6 +126,8 @@ function ProductReviews({ reviews }) {
                           muted
                           loop
                           playsInline
+                          autoPlay
+                          preload="metadata"
                           onClick={() => {
                             setPreviewList(review.images)
                             setPreviewIndex(i)

@@ -12,48 +12,49 @@ function BottomBar({ product, selectedImage }) {
         style={{ zIndex: 999 }}
       >
         <div className="container d-flex justify-content-end align-items-center gap-3 flex-nowrap">
-          {/* Nút Chat Zalo */}
-          <a
-            href="https://zalo.me/0817586856"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="d-flex justify-content-center align-items-center"
-            style={{
-              width: '44px',
-              height: '44px',
-              backgroundColor: '#fff',
-              color: '#0099ff',
-              fontSize: '1.3rem',
-              border: '1px solid #e0e0e0',
-              borderRadius: '8px',
-            }}
-          >
-            <img
-              src="/zalo-logo-vector.jpg" // hoặc /zalo-icon.png tuỳ bạn đặt
-              alt="Zalo"
-              style={{ width: '22px', height: '22px', objectFit: 'contain' }}
-            />
-          </a>
+          <div className="container d-flex justify-content-end align-items-center gap-3 flex-nowrap">
+            {/* Nút Chat Zalo */}
+            <a
+              href="https://zalo.me/0817586856"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="d-flex justify-content-center align-items-center"
+              style={{
+                width: '44px',
+                height: '44px',
+                backgroundColor: '#fff',
+                color: '#0099ff',
+                fontSize: '1.3rem',
+                border: '1px solid #e0e0e0',
+                borderRadius: '8px',
+              }}
+            >
+              <img
+                src="/zalo-logo-vector.jpg" // hoặc /zalo-icon.png tuỳ bạn đặt
+                alt="Zalo"
+                style={{ width: '22px', height: '22px', objectFit: 'contain' }}
+              />
+            </a>
 
-          {/* Nút Chat Facebook */}
-          <a
-            href="https://www.facebook.com/profile.php?id=61558711828377"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="d-flex justify-content-center align-items-center"
-            style={{
-              width: '44px',
-              height: '44px',
-              backgroundColor: '#fff',
-              color: '#1877f2',
-              fontSize: '1.3rem',
-              border: '1px solid #e0e0e0',
-              borderRadius: '8px',
-            }}
-          >
-            <i className="bi bi-facebook" />
-          </a>
-
+            {/* Nút Chat Facebook */}
+            <a
+              href="https://www.facebook.com/profile.php?id=61558711828377"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="d-flex justify-content-center align-items-center"
+              style={{
+                width: '44px',
+                height: '44px',
+                backgroundColor: '#fff',
+                color: '#1877f2',
+                fontSize: '1.3rem',
+                border: '1px solid #e0e0e0',
+                borderRadius: '8px',
+              }}
+            >
+              <i className="bi bi-facebook" />
+            </a>
+          </div>
           {/* Nút Mua với voucher — giữ nguyên bản gốc */}
           <button
             className="btn text-white d-flex flex-column align-items-center"

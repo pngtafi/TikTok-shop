@@ -123,6 +123,8 @@ function ProductReviews({ reviews }) {
                       return isVideo ? (
                         <video
                           key={i}
+                          autoPlay
+                          loop
                           muted
                           playsInline
                           preload="auto"

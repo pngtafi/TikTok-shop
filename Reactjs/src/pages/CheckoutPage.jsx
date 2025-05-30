@@ -51,14 +51,19 @@ function CheckoutPage() {
 
       // TikTok client-side
       if (typeof ttq !== 'undefined') {
-        ttq.track('CompletePayment', {
-          value: total,
-          currency: 'VND',
-          content_id: product.id,
-          content_type: 'product',
-          quantity,
-          event_id: eventId,
-        })
+        ttq.track(
+          'CompletePayment',
+          {
+            value: total,
+            currency: 'VND',
+            content_id: product.id,
+            content_type: 'product',
+            quantity,
+          },
+          {
+            event_id: eventId, // ✅ Đặt đúng vị trí là object thứ 3
+          }
+        )
       }
 
       setTimeout(() => {

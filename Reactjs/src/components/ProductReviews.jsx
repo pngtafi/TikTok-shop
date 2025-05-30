@@ -124,10 +124,8 @@ function ProductReviews({ reviews }) {
                         <video
                           key={i}
                           muted
-                          loop
                           playsInline
-                          autoPlay
-                          preload="metadata"
+                          preload="auto"
                           onClick={() => {
                             setPreviewList(review.images)
                             setPreviewIndex(i)

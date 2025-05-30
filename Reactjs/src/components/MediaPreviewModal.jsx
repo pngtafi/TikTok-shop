@@ -77,6 +77,7 @@ function MediaPreviewModal({
             controls
             autoPlay
             muted
+            playsInline
             style={{ marginTop: '20px', maxHeight: '80vh', maxWidth: '90vw' }}
           />
         ) : (

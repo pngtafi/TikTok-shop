@@ -77,13 +77,13 @@ function MediaPreviewModal({
             controls
             autoPlay
             muted
-            style={{ maxHeight: '90vh', maxWidth: '90vw' }}
+            style={{ marginTop: '20px', maxHeight: '80vh', maxWidth: '90vw' }}
           />
         ) : (
           <img
             src={currentMedia}
             alt="preview"
-            style={{ maxHeight: '90vh', maxWidth: '90vw' }}
+            style={{ marginTop: '20px', maxHeight: '80vh', maxWidth: '90vw' }}
           />
         )}
       </div>

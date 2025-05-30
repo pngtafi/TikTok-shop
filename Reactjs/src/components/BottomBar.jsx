@@ -11,7 +11,7 @@ function BottomBar({ product, selectedImage }) {
         className="bottom-bar bg-light border-top py-2 position-fixed bottom-0 start-0 end-0"
         style={{ zIndex: 999 }}
       >
-        <div className="container d-flex justify-content-end align-items-center gap-2 flex-nowrap">
+        <div className="container d-flex justify-content-end align-items-center gap-3 flex-nowrap">
           {/* Nút Chat Zalo */}
           <a
             href="https://zalo.me/0817586856"
@@ -61,8 +61,9 @@ function BottomBar({ product, selectedImage }) {
               background:
                 'linear-gradient(to right, rgb(255, 87, 34), rgb(255, 152, 0))',
               border: 'none',
-              padding: '6px 24px',
+              padding: '6px 32px',
               borderRadius: '10px',
+              minWidth: '50vw',
             }}
             onClick={() => setShowModal(true)}
           >

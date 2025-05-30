@@ -1,6 +1,34 @@
 import React, { useState } from 'react'
 import MediaPreviewModal from './MediaPreviewModal'
 
+const maskUsername = (fullName) => {
+  if (!fullName) return ''
+
+  const maskWord = (word) => {
+    if (word.length <= 1) return word
+
+    const chars = [...word]
+    const totalKeep = Math.min(4, word.length)
+    const keepIndexes = new Set([0]) // luôn giữ ký tự đầu tiên
+
+    while (keepIndexes.size < totalKeep) {
+      const i = Math.floor(Math.random() * word.length)
+      if (i !== 0) keepIndexes.add(i)
+    }
+
+    return chars.map((ch, i) => (keepIndexes.has(i) ? ch : '*')).join('')
+  }
+
+  return fullName
+    .trim()
+    .split(/\s+/)
+    .map((word) => {
+      const masked = maskWord(word)
+      return masked.charAt(0).toUpperCase() + masked.slice(1)
+    })
+    .join(' ')
+}
+
 function ProductReviews({ reviews }) {
   const [previewIndex, setPreviewIndex] = useState(null)
   const [previewList, setPreviewList] = useState([])
@@ -71,7 +99,7 @@ function ProductReviews({ reviews }) {
                       objectFit: 'cover',
                     }}
                   />
-                  <strong>{review.user}</strong>
+                  <strong>{maskUsername(review.user)}</strong>
                 </div>
                 <div className="text-warning mb-1">{stars}</div>
                 <div className="mb-1">{review.content}</div>

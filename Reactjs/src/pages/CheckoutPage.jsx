@@ -46,7 +46,7 @@ function CheckoutPage() {
       })
 
       ttq.track('CompletePayment', {
-        value: displayPrice, // Tổng giá trị đơn hàng
+        value: total, // Tổng giá trị đơn hàng
         currency: 'VND', // Đơn vị tiền tệ
         content_id: product.id, // ID sản phẩm (nếu có)
         content_type: 'product', // Loại nội dung

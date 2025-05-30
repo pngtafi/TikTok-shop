@@ -22,8 +22,14 @@ export const sendTikTokEvent = async (eventData) => {
         url: eventData.url || 'https://tik-tok-shop-five.vercel.app',
       },
       user: {
-        external_id: eventData.userId || 'unknown_user',
+        external_id: eventData.userId || 'anonymous_user',
       },
+    },
+    properties: {
+      value: eventData.value || 1,
+      currency: eventData.currency || 'VND',
+      content_type: 'product',
+      content_id: eventData.productId || 'unknown',
     },
   }
 

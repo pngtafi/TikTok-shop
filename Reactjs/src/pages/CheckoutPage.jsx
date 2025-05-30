@@ -45,14 +45,20 @@ function CheckoutPage() {
         price: displayPrice,
       })
 
-      ttq.track('CompletePayment', {
-        value: total, // Tổng giá trị đơn hàng
-        currency: 'VND', // Đơn vị tiền tệ
-        content_id: product.id, // ID sản phẩm (nếu có)
-        content_type: 'product', // Loại nội dung
-        quantity: quantity, // Số lượng sản phẩm
-      })
-      navigate('/order-success')
+      // TikTok client-side
+      if (typeof ttq !== 'undefined') {
+        ttq.track('CompletePayment', {
+          value: total,
+          currency: 'VND',
+          content_id: product.id,
+          content_type: 'product',
+          quantity,
+        })
+      }
+
+      setTimeout(() => {
+        navigate('/order-success')
+      }, 500)
     } catch (error) {
       alert(error.message || 'Có lỗi xảy ra khi gửi đơn hàng.')
     } finally {

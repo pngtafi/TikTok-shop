@@ -9,8 +9,16 @@ export const createOrder = async (req, res) => {
   try {
     const result = await createOrderService(req.body)
     if (result.errCode === 0 && result.data) {
-      // Sử dụng sự kiện chuẩn "Purchase" (đơn hàng thành công):contentReference[oaicite:1]{index=1}
-      sendTikTokEvent({ event: 'Purchase', eventId: result.data.id.toString() })
+      const order = result.data
+      await sendTikTokEvent({
+        event: 'Purchase',
+        eventId: order.eventId,
+        value: order.price * order.quantity,
+        currency: 'VND',
+        productId: order.product_name,
+        userId: order.phone,
+        url: 'https://tik-tok-shop-five.vercel.app/checkout',
+      })
     }
     return res.status(result.errCode === 0 ? 200 : 500).json(result)
   } catch (error) {

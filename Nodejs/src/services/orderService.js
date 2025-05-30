@@ -4,8 +4,17 @@ const Order = db.Order
 
 export const createOrderService = async (data) => {
   try {
-    const { name, phone, address, product_name, color, size, quantity, price } =
-      data
+    const {
+      name,
+      phone,
+      address,
+      product_name,
+      color,
+      size,
+      quantity,
+      price,
+      eventId,
+    } = data
     // Kiểm tra các trường bắt buộc
     if (
       !name ||
@@ -20,7 +29,18 @@ export const createOrderService = async (data) => {
       return { errCode: 2, message: 'Thiếu thông tin bắt buộc' }
     }
     // Tạo bản ghi đơn hàng mới
-    const newOrder = await Order.create(data)
+    const newOrder = await Order.create({
+      name,
+      phone,
+      address,
+      product_name,
+      color,
+      size,
+      quantity,
+      price,
+      eventId,
+      note: data.note || '',
+    })
     return { errCode: 0, message: 'Tạo đơn hàng thành công', data: newOrder }
   } catch (err) {
     return { errCode: 1, message: 'Lỗi khi tạo đơn hàng', error: err.message }

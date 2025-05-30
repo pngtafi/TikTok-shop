@@ -32,6 +32,9 @@ function CheckoutPage() {
 
     setLoading(true)
 
+    const eventId =
+      Date.now().toString() + Math.random().toString(36).substring(2, 8)
+
     try {
       await createOrder({
         name,
@@ -43,6 +46,7 @@ function CheckoutPage() {
         size: variant.size,
         quantity,
         price: displayPrice,
+        eventId: eventId,
       })
 
       // TikTok client-side
@@ -53,6 +57,7 @@ function CheckoutPage() {
           content_id: product.id,
           content_type: 'product',
           quantity,
+          event_id: eventId,
         })
       }
 

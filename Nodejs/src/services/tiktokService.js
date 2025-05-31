@@ -3,8 +3,13 @@ import crypto from 'crypto'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const sha256 = (val) =>
-  crypto.createHash('sha256').update(val.trim().toLowerCase()).digest('hex')
+const sha256 = (val) => {
+  if (!val) return ''
+  return crypto
+    .createHash('sha256')
+    .update(val.trim().toLowerCase())
+    .digest('hex')
+}
 
 export const sendTikTokEvent = async (eventData) => {
   const pixelCode = process.env.TIKTOK_PIXEL_CODE

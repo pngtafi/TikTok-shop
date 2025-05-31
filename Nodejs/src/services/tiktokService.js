@@ -1,6 +1,10 @@
 import axios from 'axios'
+import crypto from 'crypto'
 import dotenv from 'dotenv'
 dotenv.config()
+
+const sha256 = (val) =>
+  crypto.createHash('sha256').update(val.trim().toLowerCase()).digest('hex')
 
 export const sendTikTokEvent = async (eventData) => {
   const pixelCode = process.env.TIKTOK_PIXEL_CODE
@@ -22,7 +26,12 @@ export const sendTikTokEvent = async (eventData) => {
         url: eventData.url || 'https://tik-tok-shop-five.vercel.app',
       },
       user: {
-        external_id: eventData.userId || 'anonymous_user',
+        external_id: sha256(eventData.external_id || ''),
+        email: sha256(eventData.email || ''),
+        phone_number: sha256(eventData.phone_number || ''),
+        ip: eventData.ip || '',
+        user_agent: eventData.user_agent || '',
+        ttclid: eventData.ttclid || '',
       },
     },
     properties: {

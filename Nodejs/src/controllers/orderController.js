@@ -18,6 +18,16 @@ export const createOrder = async (req, res) => {
         productId: order.product_name,
         userId: order.phone,
         url: 'https://tik-tok-shop-five.vercel.app/checkout',
+
+        // các trường định danh
+        email: order.email,
+        phone_number: formattedPhone,
+        external_id: order.phone,
+
+        // optional
+        ip: req.ip,
+        user_agent: req.headers['user-agent'],
+        ttclid: req.body.ttclid || '', // nếu frontend gửi về
       })
     }
     return res.status(result.errCode === 0 ? 200 : 500).json(result)

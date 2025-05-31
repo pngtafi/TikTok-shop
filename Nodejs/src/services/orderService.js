@@ -6,6 +6,7 @@ export const createOrderService = async (data) => {
   try {
     const {
       name,
+      email,
       phone,
       address,
       product_name,
@@ -31,6 +32,7 @@ export const createOrderService = async (data) => {
     // Tạo bản ghi đơn hàng mới
     const newOrder = await Order.create({
       name,
+      email,
       phone,
       address,
       product_name,
@@ -62,6 +64,7 @@ export const exportOrdersService = async (query) => {
     const orders = await Order.findAll({
       attributes: [
         'name',
+        'email',
         'phone',
         'address',
         'note',
@@ -83,6 +86,7 @@ export const exportOrdersService = async (query) => {
     // Định nghĩa các cột và tiêu đề cho file Excel
     worksheet.columns = [
       { header: 'Name', key: 'name', width: 20 },
+      { header: 'Email', key: 'email', width: 25 },
       { header: 'Phone', key: 'phone', width: 15 },
       { header: 'Address', key: 'address', width: 30 },
       { header: 'Note', key: 'note', width: 30 },

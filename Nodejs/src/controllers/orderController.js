@@ -10,6 +10,7 @@ export const createOrder = async (req, res) => {
     const result = await createOrderService(req.body)
     if (result.errCode === 0 && result.data) {
       const order = result.data
+      const formattedPhone = order.phone.replace(/^0/, '84')
       await sendTikTokEvent({
         event: 'Purchase',
         eventId: order.eventId,

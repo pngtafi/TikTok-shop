@@ -2,12 +2,15 @@ import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { createOrder } from '../services/orderService'
 
+const ttclid = new URLSearchParams(window.location.search).get('ttclid')
+
 function CheckoutPage() {
   const { state } = useLocation()
   const navigate = useNavigate()
   const { product, variant, quantity } = state || {}
 
   const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
   const [note, setNote] = useState('')
@@ -38,6 +41,7 @@ function CheckoutPage() {
     try {
       await createOrder({
         name,
+        email,
         phone,
         address,
         note,
@@ -47,6 +51,7 @@ function CheckoutPage() {
         quantity,
         price: displayPrice,
         eventId: eventId,
+        ttclid,
       })
 
       // TikTok client-side
@@ -61,7 +66,7 @@ function CheckoutPage() {
             quantity,
           },
           {
-            event_id: eventId, // ✅ Đặt đúng vị trí là object thứ 3
+            event_id: eventId,
           }
         )
       }
@@ -107,6 +112,13 @@ function CheckoutPage() {
           placeholder="Họ và tên"
           value={name}
           onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          className="form-control mb-2"
+          placeholder="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <input
           className="form-control mb-2"

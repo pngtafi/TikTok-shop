@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { createOrder } from '../services/orderService'
 
@@ -15,6 +15,14 @@ function CheckoutPage() {
   const [address, setAddress] = useState('')
   const [note, setNote] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(''), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [error])
 
   if (!product || !variant || !quantity) {
     return <div className="container py-3">Không có dữ liệu sản phẩm.</div>
@@ -29,7 +37,7 @@ function CheckoutPage() {
 
   const handleOrder = async () => {
     if (!name || !phone || !address) {
-      alert('Vui lòng điền đầy đủ thông tin người nhận!')
+      setError('Vui lòng điền đầy đủ thông tin người nhận!')
       return
     }
 
@@ -107,35 +115,54 @@ function CheckoutPage() {
       <div className="bg-white p-3 rounded shadow-sm mb-3">
         <h6 className="fw-bold mb-3">Thông tin người nhận</h6>
 
+        {error && (
+          <div className="alert alert-warning p-2 mb-2 text-center">
+            {error}
+          </div>
+        )}
+
+        <label className="form-label">Họ và tên</label>
         <input
           className="form-control mb-2"
-          placeholder="Họ và tên"
+          placeholder="Nhập họ tên"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
+
+        <label className="form-label">
+          Email <span className="text-muted">(không bắt buộc)</span>
+        </label>
         <input
           className="form-control mb-2"
-          placeholder="Email"
           type="email"
+          placeholder="example@gmail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+
+        <label className="form-label">Số điện thoại</label>
         <input
           className="form-control mb-2"
-          placeholder="Số điện thoại"
+          placeholder="Nhập số điện thoại"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
+
+        <label className="form-label">Địa chỉ nhận hàng</label>
         <textarea
           className="form-control mb-2"
-          placeholder="Địa chỉ nhận hàng"
+          placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"
           rows={2}
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
+
+        <label className="form-label">
+          Lời nhắn cho shop <span className="text-muted">(không bắt buộc)</span>
+        </label>
         <textarea
           className="form-control"
-          placeholder="Lời nhắn cho shop (tuỳ chọn)"
+          placeholder="Ví dụ: Giao giờ hành chính"
           rows={2}
           value={note}
           onChange={(e) => setNote(e.target.value)}

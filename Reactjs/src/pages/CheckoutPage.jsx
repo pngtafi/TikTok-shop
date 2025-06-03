@@ -39,14 +39,14 @@ function CheckoutPage() {
 
   const normalizePhone = (phone) => {
     const cleaned = phone.replace(/\D/g, '')
-    if (cleaned.startsWith('0')) return `+84${cleaned.slice(1)}`
-    if (cleaned.startsWith('84')) return `+${cleaned}`
-    return `+${cleaned}`
+    if (/^0\d{9}$/.test(cleaned)) return `+84${cleaned.slice(1)}`
+    if (/^84\d{9}$/.test(cleaned)) return `+${cleaned}`
+    if (/^\+84\d{9}$/.test(cleaned)) return cleaned
+    return ''
   }
 
   const handleOrder = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    const phoneRegex = /^0[0-9]{9}$/
 
     const rawPhone = phone.trim()
     const normalizedPhone = normalizePhone(rawPhone)
@@ -65,7 +65,7 @@ function CheckoutPage() {
       return
     }
 
-    if (!phoneRegex.test(rawPhone)) {
+    if (!normalizedPhone) {
       setPhoneValid(false)
       setError('Số điện thoại không hợp lệ!')
       return

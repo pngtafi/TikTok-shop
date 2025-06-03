@@ -6,6 +6,11 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: '',
+      },
       phone: {
         type: DataTypes.STRING,
         allowNull: false,

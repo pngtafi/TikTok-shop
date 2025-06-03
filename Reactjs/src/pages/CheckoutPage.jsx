@@ -16,6 +16,8 @@ function CheckoutPage() {
   const [note, setNote] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [phoneValid, setPhoneValid] = useState(true)
+  const [emailValid, setEmailValid] = useState(true)
 
   useEffect(() => {
     if (error) {
@@ -35,22 +37,54 @@ function CheckoutPage() {
   const displayPrice = selectedImage?.price || product.price
   const total = Number(displayPrice) * quantity
 
+  const normalizePhone = (phone) => {
+    const cleaned = phone.replace(/\D/g, '')
+    if (cleaned.startsWith('0')) return `+84${cleaned.slice(1)}`
+    if (cleaned.startsWith('84')) return `+${cleaned}`
+    return `+${cleaned}`
+  }
+
   const handleOrder = async () => {
-    if (!name || !phone || !address) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const phoneRegex = /^0[0-9]{9}$/
+
+    const rawPhone = phone.trim()
+    const normalizedPhone = normalizePhone(rawPhone)
+
+    setPhoneValid(true)
+    setEmailValid(true)
+
+    if (!name || !rawPhone || !address) {
       setError('Vui lòng điền đầy đủ thông tin người nhận!')
+      return
+    }
+
+    if (email && !emailRegex.test(email.trim())) {
+      setEmailValid(false)
+      setError('Email không hợp lệ!')
+      return
+    }
+
+    if (!phoneRegex.test(rawPhone)) {
+      setPhoneValid(false)
+      setError('Số điện thoại không hợp lệ!')
       return
     }
 
     setLoading(true)
 
+    const safeEmail =
+      email && email.trim() && email.includes('@')
+        ? email.trim()
+        : `guest_${Date.now()}@aodieuhoa.vn`
     const eventId =
       Date.now().toString() + Math.random().toString(36).substring(2, 8)
 
     try {
       await createOrder({
         name,
-        email,
-        phone,
+        email: safeEmail,
+        phone: normalizedPhone,
         address,
         note,
         product_name: product.name,
@@ -64,19 +98,19 @@ function CheckoutPage() {
 
       // TikTok client-side
       if (typeof ttq !== 'undefined') {
-        ttq.track(
-          'CompletePayment',
-          {
-            value: total,
-            currency: 'VND',
-            content_id: product.id,
-            content_type: 'product',
-            quantity,
-          },
-          {
-            event_id: eventId,
-          }
-        )
+        ttq.identify({
+          email: safeEmail,
+          phone_number: normalizedPhone,
+        })
+
+        ttq.track('CompletePayment', {
+          value: total,
+          currency: 'VND',
+          content_id: product.id,
+          content_type: 'product',
+          quantity,
+          event_id: eventId,
+        })
       }
 
       setTimeout(() => {
@@ -133,20 +167,28 @@ function CheckoutPage() {
           Email <span className="text-muted">(không bắt buộc)</span>
         </label>
         <input
-          className="form-control mb-2"
+          className={`form-control mb-2 ${!emailValid ? 'is-invalid' : ''}`}
           type="email"
           placeholder="example@gmail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        {!emailValid && (
+          <div className="invalid-feedback">Email không đúng định dạng</div>
+        )}
 
         <label className="form-label">Số điện thoại</label>
         <input
-          className="form-control mb-2"
+          className={`form-control mb-2 ${!phoneValid ? 'is-invalid' : ''}`}
           placeholder="Nhập số điện thoại"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
+        {!phoneValid && (
+          <div className="invalid-feedback">
+            Số điện thoại phải đủ 10 số và bắt đầu bằng 0
+          </div>
+        )}
 
         <label className="form-label">Địa chỉ nhận hàng</label>
         <textarea

@@ -15,7 +15,23 @@ export const createOrderService = async (data) => {
       quantity,
       price,
       eventId,
+      note,
     } = data
+
+    console.log('📦 createOrderService nhận:', {
+      name,
+      email,
+      phone,
+      address,
+      product_name,
+      color,
+      size,
+      quantity,
+      price,
+      eventId,
+      note,
+    })
+
     // Kiểm tra các trường bắt buộc
     if (
       !name ||
@@ -29,10 +45,11 @@ export const createOrderService = async (data) => {
     ) {
       return { errCode: 2, message: 'Thiếu thông tin bắt buộc' }
     }
+
     // Tạo bản ghi đơn hàng mới
     const newOrder = await Order.create({
       name,
-      email,
+      email: email || '',
       phone,
       address,
       product_name,
@@ -45,6 +62,7 @@ export const createOrderService = async (data) => {
     })
     return { errCode: 0, message: 'Tạo đơn hàng thành công', data: newOrder }
   } catch (err) {
+    console.error('🔥 Lỗi createOrderService:', err)
     return { errCode: 1, message: 'Lỗi khi tạo đơn hàng', error: err.message }
   }
 }

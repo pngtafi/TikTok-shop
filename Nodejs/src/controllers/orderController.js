@@ -10,7 +10,15 @@ export const createOrder = async (req, res) => {
     const result = await createOrderService(req.body)
     if (result.errCode === 0 && result.data) {
       const order = result.data
-      const formattedPhone = order.phone.replace(/^0/, '84')
+      const normalizePhone = (phone) => {
+        const cleaned = phone.replace(/\D/g, '') // bỏ ký tự không phải số
+        if (cleaned.startsWith('0')) return `+84${cleaned.slice(1)}`
+        if (cleaned.startsWith('84')) return `+${cleaned}`
+        return `+${cleaned}`
+      }
+
+      const formattedPhone = normalizePhone(order.phone)
+
       await sendTikTokEvent({
         event: 'Purchase',
         eventId: order.eventId,
@@ -23,7 +31,7 @@ export const createOrder = async (req, res) => {
         // các trường định danh
         email: order.email,
         phone_number: formattedPhone,
-        external_id: order.phone,
+        external_id: formattedPhone,
 
         // optional
         ip: req.ip,

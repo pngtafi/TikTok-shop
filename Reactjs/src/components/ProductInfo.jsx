@@ -17,7 +17,7 @@ function ProductInfo({ name, price, original_price, sold }) {
 
     const start = today.toLocaleDateString('vi-VN', options).replace('.', '')
     const endDate = new Date()
-    endDate.setDate(today.getDate() + 3)
+    endDate.setDate(today.getDate() + 4)
     const end = endDate.toLocaleDateString('vi-VN', options).replace('.', '')
 
     return `${start} - ${end}`
@@ -94,10 +94,10 @@ function ProductInfo({ name, price, original_price, sold }) {
           <div>
             <div style={{ fontSize: '0.9rem' }}>Nhận từ {getDateRange()}</div>
             <div style={{ fontSize: '0.85rem', color: '#555' }}>
-              Miễn phí vận chuyển
+              Miễn phí vận chuyển toàn quốc
             </div>
             <div style={{ fontSize: '0.75rem', color: '#888' }}>
-              Tặng Voucher ₫15.000 nếu đơn giao sau thời gian trên.
+              Giảm ₫15.000 nếu đơn giao sau thời gian trên.
             </div>
           </div>
         </div>

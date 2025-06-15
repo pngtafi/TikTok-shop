@@ -1,0 +1,10 @@
+.app-wrapper {
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.app-wrapper img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}

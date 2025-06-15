@@ -11,6 +11,11 @@ function ProductDescription({ description, policy }) {
       <p style={{ whiteSpace: 'pre-line' }}>{policy}</p>
       <img
         className="mb-3"
+        src="https://tiktok-backend-0zv2.onrender.com/uploads/12.jpg"
+        alt=""
+      />
+      <img
+        className="mb-5"
         src="https://w.ladicdn.com/s750x500/64cd0a9c5cc416001261944a/z5296475053186_6e47b7e92bbea3588686da84485b54e9-20240329092128-bmh33.jpg"
         alt=""
       />

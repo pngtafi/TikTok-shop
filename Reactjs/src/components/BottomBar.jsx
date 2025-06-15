@@ -67,7 +67,7 @@ function BottomBar({ product, selectedImage }) {
               background:
                 'linear-gradient(to right, rgb(255, 87, 34), rgb(255, 152, 0))',
               border: 'none',
-              padding: '6px 32px',
+              padding: '6px 26px',
               borderRadius: '10px',
               minWidth: '45vw',
             }}

@@ -57,6 +57,7 @@ function ProductDetail() {
   // Tách dữ liệu từ product để truyền vào các component con
   const {
     name,
+    description,
     price,
     original_price,
     image_url,
@@ -64,6 +65,7 @@ function ProductDetail() {
     sold,
     // variants,
     reviews,
+    policy,
   } = product
 
   return (
@@ -85,7 +87,7 @@ function ProductDetail() {
       <ProductReviews reviews={reviews} />
 
       {/* Mô tả sản phẩm */}
-      <ProductDescription description={product.description} />
+      <ProductDescription description={description} policy={policy} />
 
       {/* Thanh cố định dưới cùng */}
       <BottomBar product={product} selectedImage={selectedImage} />

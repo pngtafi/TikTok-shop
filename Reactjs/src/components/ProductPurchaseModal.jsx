@@ -12,6 +12,7 @@ function ProductPurchaseModal({
   const [selectedSize, setSelectedSize] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const navigate = useNavigate()
+  const [showSizeGuide, setShowSizeGuide] = useState(false)
 
   useEffect(() => {
     if (propSelectedColor) {
@@ -82,7 +83,17 @@ function ProductPurchaseModal({
         {/* Chọn mẫu từ image_url */}
         {Array.isArray(image_url) && image_url.length > 0 && (
           <div className="mt-3">
-            <div className="fw-bold mb-2">Chọn mẫu</div>
+            <div className="d-flex align-items-center justify-content-between mb-2">
+              <div className="fw-bold me-2">Chọn mẫu</div>
+              <button
+                className="btn btn-link p-0"
+                style={{ fontSize: '0.9rem' }}
+                onClick={() => setShowSizeGuide(true)}
+              >
+                Hướng dẫn chọn size
+              </button>
+            </div>
+
             <div className="d-flex flex-wrap gap-2">
               {image_url.map((img, index) => {
                 if (img.name === 'Ảnh tham khảo') return null
@@ -185,6 +196,41 @@ function ProductPurchaseModal({
         >
           Mua ngay
         </button>
+      </div>
+
+      <SizeGuideModal
+        show={showSizeGuide}
+        onClose={() => setShowSizeGuide(false)}
+      />
+    </div>
+  )
+}
+
+const SizeGuideModal = ({ show, onClose }) => {
+  if (!show) return null
+  return (
+    <div
+      className="modal-overlay"
+      style={{ background: 'rgba(0, 0, 0, 1)', display: 'flex' }}
+    >
+      <div
+        className="modal-content p-3 rounded"
+        style={{
+          backgroundColor: '#fff',
+          maxWidth: '500px',
+          alignSelf: 'anchor-center',
+        }}
+      >
+        <button
+          onClick={onClose}
+          className="btn-close"
+          style={{ alignSelf: 'flex-end' }}
+        />
+        <img
+          src="https://tiktok-backend-0zv2.onrender.com/uploads/11.jpg"
+          alt="Hướng dẫn chọn size"
+          className="img-fluid rounded"
+        />
       </div>
     </div>
   )

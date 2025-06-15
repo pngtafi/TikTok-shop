@@ -20,6 +20,10 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      policy: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
       createdAt: {
         type: DataTypes.DATE,
         field: 'created_at',

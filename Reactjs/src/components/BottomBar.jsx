@@ -11,51 +11,56 @@ function BottomBar({ product, selectedImage }) {
         className="bottom-bar bg-light border-top py-2 position-fixed bottom-0 start-0 end-0"
         style={{ zIndex: 999 }}
       >
-        <div className="container d-flex justify-content-end align-items-center gap-3 flex-nowrap">
-          <div className="container d-flex justify-content-end align-items-center gap-3 flex-nowrap">
-            {/* Nút Chat Zalo */}
+        <div className="container d-flex justify-content-between align-items-center py-2 gap-3 flex-nowrap">
+          {/* Bên trái: Chat qua + icon */}
+          <div className="d-flex align-items-center gap-2 flex-nowrap">
+            <span style={{ whiteSpace: 'nowrap', fontWeight: 500 }}>
+              Chat qua
+            </span>
+
+            {/* Zalo */}
             <a
               href="https://zalo.me/0817586856"
               target="_blank"
               rel="noopener noreferrer"
               className="d-flex justify-content-center align-items-center"
               style={{
-                width: '44px',
-                height: '44px',
+                width: '40px',
+                height: '40px',
                 backgroundColor: '#fff',
-                color: '#0099ff',
-                fontSize: '1.3rem',
                 border: '1px solid #e0e0e0',
                 borderRadius: '8px',
               }}
             >
               <img
-                src="/zalo-logo-vector.jpg" // hoặc /zalo-icon.png tuỳ bạn đặt
+                src="/zalo-logo-vector.jpg"
                 alt="Zalo"
-                style={{ width: '22px', height: '22px', objectFit: 'contain' }}
+                style={{ width: '20px', height: '20px', objectFit: 'contain' }}
               />
             </a>
 
-            {/* Nút Chat Facebook */}
+            {/* Facebook */}
             <a
               href="https://www.facebook.com/profile.php?id=61558711828377"
               target="_blank"
               rel="noopener noreferrer"
               className="d-flex justify-content-center align-items-center"
               style={{
-                width: '44px',
-                height: '44px',
+                width: '40px',
+                height: '40px',
                 backgroundColor: '#fff',
-                color: '#1877f2',
-                fontSize: '1.3rem',
                 border: '1px solid #e0e0e0',
                 borderRadius: '8px',
               }}
             >
-              <i className="bi bi-facebook" />
+              <i
+                className="bi bi-facebook"
+                style={{ fontSize: '20px', color: '#1877f2' }}
+              />
             </a>
           </div>
-          {/* Nút Mua với voucher — giữ nguyên bản gốc */}
+
+          {/* Bên phải: Nút mua */}
           <button
             className="btn text-white d-flex flex-column align-items-center"
             style={{
@@ -64,7 +69,7 @@ function BottomBar({ product, selectedImage }) {
               border: 'none',
               padding: '6px 32px',
               borderRadius: '10px',
-              minWidth: '50vw',
+              minWidth: '45vw',
             }}
             onClick={() => setShowModal(true)}
           >

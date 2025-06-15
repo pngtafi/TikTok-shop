@@ -242,7 +242,7 @@ function CheckoutPage() {
 
       {/* Tổng tiền */}
       <div className="bg-white p-3 rounded shadow-sm mb-5">
-        <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between mb-3">
           <span className="fw-bold">Tổng cộng</span>
           <span className="text-danger fw-bold">
             ₫{Number(total).toLocaleString('vi-VN')}

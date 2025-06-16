@@ -222,10 +222,7 @@ function CheckoutPage() {
                 : product.image_url)
             }
             alt="product"
-            width="60"
-            height="60"
-            className="rounded me-2"
-            style={{ objectFit: 'cover' }}
+            className="image-chekout rounded me-2"
           />
           <div>
             <div className="fw-bold">{product.name}</div>

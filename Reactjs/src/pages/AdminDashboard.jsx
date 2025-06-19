@@ -7,6 +7,8 @@ import {
   uploadImages,
 } from '../services/productService'
 import { exportOrders } from '../services/orderService'
+import * as XLSX from 'xlsx'
+import { importReviews } from '../services/reviewService'
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState([])
@@ -184,6 +186,37 @@ const AdminDashboard = () => {
     }
   }
 
+  const handleImportReviews = (e) => {
+    const file = e.target.files[0]
+    const reader = new FileReader()
+
+    reader.onload = async (evt) => {
+      const workbook = XLSX.read(evt.target.result, { type: 'binary' })
+      const sheet = workbook.Sheets[workbook.SheetNames[0]]
+      const data = XLSX.utils.sheet_to_json(sheet)
+
+      const parsed = data.map((row) => ({
+        product_id: Number(row.product_id),
+        user: row.user,
+        icon: row.icon,
+        images: JSON.parse(row.images || '[]'),
+        rating: Number(row.rating),
+        content: row.content,
+        variant: row.variant,
+      }))
+
+      try {
+        const res = await importReviews(parsed)
+        setMessage(`✅ Đã import ${res.count} đánh giá`)
+      } catch (err) {
+        console.error('Import lỗi:', err)
+        setError('❌ Lỗi khi import đánh giá')
+      }
+    }
+
+    reader.readAsBinaryString(file)
+  }
+
   return (
     <div className="container mt-4">
       <h3>🛠 {editingId ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}</h3>
@@ -298,6 +331,12 @@ const AdminDashboard = () => {
         <button className="btn btn-success" onClick={handleExport}>
           ⬇️ Export Đơn Hàng (Excel)
         </button>
+      </div>
+
+      <hr />
+      <div className="mt-4">
+        <h5>📥 Import đánh giá sản phẩm</h5>
+        <input type="file" accept=".xlsx" onChange={handleImportReviews} />
       </div>
 
       <table className="table table-bordered table-hover mt-3">

@@ -8,6 +8,7 @@ import productRoutes from './routes/productRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
+import reviewRoutes from './routes/reviewRoutes.js'
 
 dotenv.config()
 const app = express()
@@ -32,6 +33,8 @@ app.use('/uploads', express.static('uploads'))
 app.use('/api/upload', uploadRoutes)
 
 app.use('/api/orders', orderRoutes)
+
+app.use('/api/reviews', reviewRoutes)
 
 // Health check
 app.get('/', (req, res) => {

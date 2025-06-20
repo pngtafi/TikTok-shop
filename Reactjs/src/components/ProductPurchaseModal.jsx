@@ -218,7 +218,7 @@ const SizeGuideModal = ({ show, onClose }) => {
         style={{
           backgroundColor: '#fff',
           maxWidth: '500px',
-          alignSelf: 'anchor-center',
+          alignSelf: 'center',
         }}
       >
         <button

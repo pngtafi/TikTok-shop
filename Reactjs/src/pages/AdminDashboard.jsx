@@ -191,26 +191,31 @@ const AdminDashboard = () => {
     const reader = new FileReader()
 
     reader.onload = async (evt) => {
-      const workbook = XLSX.read(evt.target.result, { type: 'binary' })
-      const sheet = workbook.Sheets[workbook.SheetNames[0]]
-      const data = XLSX.utils.sheet_to_json(sheet)
-
-      const parsed = data.map((row) => ({
-        product_id: Number(row.product_id),
-        user: row.user,
-        icon: row.icon,
-        images: JSON.parse(row.images || '[]'),
-        rating: Number(row.rating),
-        content: row.content,
-        variant: row.variant,
-      }))
-
       try {
+        const workbook = XLSX.read(evt.target.result, { type: 'binary' })
+        const sheet = workbook.Sheets[workbook.SheetNames[0]]
+        const data = XLSX.utils.sheet_to_json(sheet)
+
+        const parsed = data.map((row) => ({
+          product_id: Number(row.product_id),
+          user: row.user,
+          icon: row.icon,
+          images: JSON.parse(row.images || '[]'),
+          rating: Number(row.rating),
+          content: row.content,
+          variant: row.variant,
+        }))
+
         const res = await importReviews(parsed)
-        setMessage(`✅ Đã import ${res.count} đánh giá`)
+
+        if (!res || !res.count) {
+          throw new Error('Phản hồi không hợp lệ từ server')
+        }
+
+        alert(`✅ Đã import ${res.count} đánh giá`)
       } catch (err) {
         console.error('Import lỗi:', err)
-        setError('❌ Lỗi khi import đánh giá')
+        alert('❌ Import lỗi: ' + err.message)
       }
     }
 
